@@ -78,14 +78,14 @@ def get_json_schema_from_ast_element(
                 return {
                     "type": "object",
                     "additionalProperties": get_json_schema_from_ast_element(
-                        ast_element.slice.value.elts[1], type_namespace, schema_map
+                        ast_element.slice.elts[1], type_namespace, schema_map
                     ),
                 }
             else:  # Union
                 return {
                     "anyOf": [
                         get_json_schema_from_ast_element(element, type_namespace, schema_map)
-                        for element in ast_element.slice.value.elts
+                        for element in ast_element.slice.elts
                     ]
                 }
     else:
