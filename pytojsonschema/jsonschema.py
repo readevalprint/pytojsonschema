@@ -1,4 +1,5 @@
 import ast
+import json
 import typing
 
 from .common import (
@@ -96,8 +97,12 @@ def get_json_schema_from_ast_element(
                 }
             elif subscript_type == "Annotated":
                 result = get_json_schema_from_ast_element(ast_element.slice.elts[0], type_namespace, schema_map)
-                for d in ast_element.slice.elts[1:]:
-                    result.update({k.value: v.value for k, v in zip(d.keys, d.values)})
+                if len(ast_element.slice.elts[1:]) > 1:
+                    raise InvalidTypeAnnotation("Annotation must be a single literal json string")
+                try:
+                    result.update(json.loads(ast_element.slice.elts[1].value))
+                except json.JSONDecodeError as e:
+                    result["error"] = f"Error parsing JSON annotation: {e}"
                 return result
             else:
                 raise InvalidTypeAnnotation(f"{subscript_type} is not supported")
