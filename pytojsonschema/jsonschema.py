@@ -100,7 +100,7 @@ def get_json_schema_from_ast_element(
                 if len(ast_element.slice.elts[1:]) > 1:
                     raise InvalidTypeAnnotation("Annotation must be a single literal json string")
                 try:
-                    result.update(json.loads(ast_element.slice.elts[1].value))
+                    result = result | json.loads(ast_element.slice.elts[1].value)
                 except json.JSONDecodeError as e:
                     result["error"] = f"Error parsing JSON annotation: {e}"
                 return result
