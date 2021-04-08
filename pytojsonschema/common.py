@@ -12,6 +12,7 @@ VALID_TYPING_AST_SUBSCRIPT_TYPES = frozenset({"Union", "List", "Dict", "Optional
 VALID_TYPING_TYPES = VALID_TYPING_AST_SUBSCRIPT_TYPES | frozenset({"TypedDict", "Any"})
 VALID_ENUM_TYPES = frozenset({"Enum", "Literal"})
 VALID_TYPES = VALID_TYPING_TYPES | VALID_ENUM_TYPES
+ALLOWED_ANNOTATION_KEYS = {"title", "description", "type"}
 
 TypeNamespace = typing.Dict[str, typing.Set[str]]
 Schema = typing.Dict[str, typing.Any]

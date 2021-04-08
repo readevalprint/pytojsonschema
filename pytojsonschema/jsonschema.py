@@ -7,6 +7,7 @@ from .common import (
     SchemaMap,
     Schema,
     get_ast_name_or_attribute_string,
+    ALLOWED_ANNOTATION_KEYS,
     VALID_TYPING_AST_SUBSCRIPT_TYPES,
     InvalidTypeAnnotation,
 )
@@ -100,7 +101,13 @@ def get_json_schema_from_ast_element(
                 if len(ast_element.slice.elts[1:]) > 1:
                     raise InvalidTypeAnnotation("Annotation must be a single literal json string")
                 try:
-                    result = result | json.loads(ast_element.slice.elts[1].value)
+
+                    annotation_dict = json.loads(ast_element.slice.elts[1].value)
+                    for k in annotation_dict.keys():
+                        if k not in ALLOWED_ANNOTATION_KEYS:
+                            raise InvalidTypeAnnotation(f"{k} is not a valid annotation, valid annotations are: "+", ".join(ALLOWED_ANNOTATION_KEYS))
+
+                    result = result | annotation_dict
                 except json.JSONDecodeError as e:
                     result["error"] = f"Error parsing JSON annotation: {e}"
                 return result
